@@ -1,0 +1,27 @@
+name: MEV Shield Bot
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes
+  workflow_dispatch:        # Manual trigger
+
+jobs:
+  mev-protection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install @solana/web3.js
+        
+      - name: Run MEV Shield
+        env:
+          RPC_URL: ${{ secrets.RPC_URL }}
+          YOUR_WALLET: ${{ secrets.YOUR_WALLET }}
+        run: node mev-bot.js
